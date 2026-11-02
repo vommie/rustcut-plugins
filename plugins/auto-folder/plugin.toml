@@ -19,6 +19,8 @@ key = "rules"
 label = "Rules"
 kind = "table"
 add_label = "Add rule"
+reorder_drag = true
+reorder_buttons = true
 empty = "No rules yet. Add one: videos from its source folder then go to its target folder."
 help = "One rule per line. Example: source ~/Videos/Holiday, target \"Holiday 2026\": every video opened from ~/Videos/Holiday (or below it) gets \"Holiday 2026\" as its target folder."
 

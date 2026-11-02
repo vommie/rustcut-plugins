@@ -19,6 +19,8 @@ key = "rules"
 label = "Rules"
 kind = "table"
 add_label = "Add rule"
+reorder_drag = true
+reorder_buttons = true
 empty = "No rules yet. Add one: assigning its tag then sets its rating."
 help = "One rule per tag. Example: tag Treasure chest › Great, 5 stars: assigning that tag gives the clip 5 stars."
 
