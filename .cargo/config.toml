@@ -1,0 +1,7 @@
+[alias]
+# The repository's tools: cargo xtask --help.
+xtask = "run --quiet --package xtask --"
+
+[net]
+# Fetch git dependencies with the system's git, so its SSH setup is used.
+git-fetch-with-cli = true

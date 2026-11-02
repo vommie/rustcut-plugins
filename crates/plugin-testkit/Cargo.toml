@@ -1,0 +1,17 @@
+[package]
+name = "plugin-testkit"
+description = "Builds a plugin for wasm32-wasip2 and runs it in RustCut's real plugin host, for the plugins' tests"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+rustcut-plugin-host.workspace = true
+serde_json.workspace = true

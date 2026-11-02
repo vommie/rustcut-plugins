@@ -1,0 +1,15 @@
+//! {{name}} built for wasm32-wasip2 and run in RustCut's real plugin host.
+
+#![allow(clippy::unwrap_used, reason = "test code")]
+
+use plugin_testkit::{Context, Event, OpenedBy};
+use serde_json::json;
+
+#[test]
+fn it_loads_and_answers() {
+    let mut plugin = plugin_testkit::plugin!(json!({}));
+    let actions = plugin
+        .handle(&Event::VideoOpened(OpenedBy::User), &Context::default())
+        .unwrap();
+    assert!(actions.is_empty());
+}

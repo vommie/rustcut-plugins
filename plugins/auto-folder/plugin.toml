@@ -1,0 +1,117 @@
+id = "auto-folder"
+name = "Auto-Folder"
+version = "1.0.0"
+api = "1.0"
+description = "Sets the target folder from the folder the video comes from."
+authors = ["vommie"]
+license = "MIT"
+repository = "https://github.com/vommie/rustcut-plugins"
+icon = "folder-bolt"
+# The build output while developing; a plugin file always holds plugin.wasm.
+wasm = "../../target/wasm32-wasip2/release/auto_folder.wasm"
+
+[[cards]]
+title = "Rules"
+description = "A video from a rule's source folder gets the rule's target folder. When several rules match, the most specific one wins: a deeper folder beats a shallower one, a folder rule beats a regular expression, and among equals the upper rule wins."
+
+[[cards.fields]]
+key = "rules"
+label = "Rules"
+kind = "table"
+add_label = "Add rule"
+empty = "No rules yet. Add one: videos from its source folder then go to its target folder."
+help = "One rule per line. Example: source ~/Videos/Holiday, target \"Holiday 2026\": every video opened from ~/Videos/Holiday (or below it) gets \"Holiday 2026\" as its target folder."
+
+[[cards.fields.columns]]
+key = "source"
+label = "Source folder"
+kind = "path"
+select = "folder"
+placeholder = "~/Videos/Holiday"
+help = "The folder the video comes from. ~ is your home folder. Example: ~/Videos/Holiday matches ~/Videos/Holiday/beach.mp4. With Regex on, this is a regular expression instead."
+
+[[cards.fields.columns]]
+key = "subfolders"
+label = "Subfolders"
+kind = "switch"
+default = true
+enabled_if = { key = "regex", equals = false }
+help = "On: the rule also matches videos in folders below the source, e.g. ~/Videos/Holiday/2026/Crete/beach.mp4. Off: only videos directly in the source folder."
+
+[[cards.fields.columns]]
+key = "regex"
+label = "Regex"
+kind = "switch"
+default = false
+help = "On: the source is a regular expression, matched against the video's folder (the whole path without the file name). Example: ^/mnt/usb[0-9]+/Clips matches /mnt/usb1/Clips and /mnt/usb2/Clips/Day 2. A regular expression rule only wins when no folder rule matches."
+
+[[cards.fields.columns]]
+key = "target"
+label = "Target folder"
+kind = "target"
+help = "The folder of Settings > Target Folders that the video's job goes to."
+
+[[cards.fields.columns]]
+key = "message"
+label = "Message"
+kind = "choice"
+default = "none"
+help = "Whether a message says that this rule set the target: None, a Toast that goes away by itself, or a Banner that stays until you close it."
+options = [
+    { value = "none", label = "None", help = "No message; the plugin mark at the folder field still tells." },
+    { value = "toast", label = "Toast", help = "A short message that goes away by itself." },
+    { value = "banner", label = "Banner", help = "A message that stays until you close it." },
+]
+
+[[cards]]
+title = "Behavior"
+description = "When the rules apply and what happens without a match."
+
+[[cards.fields]]
+key = "trigger"
+label = "Apply the rules when"
+kind = "choice"
+default = "new-video"
+help = "New video: when you open a video (File > Open, a drop, the command line). Also loaded jobs: also when you load a queued job into the editor, which otherwise keeps the job's own target folder."
+options = [
+    { value = "new-video", label = "A new video is opened" },
+    { value = "also-jobs", label = "A video is opened or a job is loaded" },
+]
+
+[[cards.fields]]
+key = "when_no_match"
+label = "When no rule matches"
+kind = "choice"
+default = "nothing"
+help = "Nothing: RustCut chooses the target folder as it always does. Default target: the folder below is used for every video no rule matches."
+options = [
+    { value = "nothing", label = "Do nothing" },
+    { value = "default", label = "Use a default target" },
+]
+
+[[cards.fields]]
+key = "default_target"
+label = "Default target"
+kind = "target"
+enabled_if = { key = "when_no_match", equals = "default" }
+help = "The target folder for videos no rule matches, e.g. \"Unsorted\"."
+
+[[cards.fields]]
+key = "default_message"
+label = "Message for the default target"
+kind = "choice"
+default = "none"
+enabled_if = { key = "when_no_match", equals = "default" }
+help = "Whether a message says that the default target was used."
+options = [
+    { value = "none", label = "None" },
+    { value = "toast", label = "Toast" },
+    { value = "banner", label = "Banner" },
+]
+
+[[cards.fields]]
+key = "show_messages"
+label = "Show messages"
+kind = "switch"
+default = true
+help = "The master switch of this plugin's messages. Off hides every message for now, without changing the Message column of the rules; switch it on again and they show as set."

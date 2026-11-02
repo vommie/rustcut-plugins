@@ -1,0 +1,66 @@
+id = "auto-rate"
+name = "Auto-Rate"
+version = "1.0.0"
+api = "1.0"
+description = "Sets a rating when you assign a tag."
+authors = ["vommie"]
+license = "MIT"
+repository = "https://github.com/vommie/rustcut-plugins"
+icon = "star"
+# The build output while developing; a plugin file always holds plugin.wasm.
+wasm = "../../target/wasm32-wasip2/release/auto_rate.wasm"
+
+[[cards]]
+title = "Rules"
+description = "When you assign a rule's tag in the Tag & Rate panel, the clip gets the rule's rating. Removing the tag again keeps the rating."
+
+[[cards.fields]]
+key = "rules"
+label = "Rules"
+kind = "table"
+add_label = "Add rule"
+empty = "No rules yet. Add one: assigning its tag then sets its rating."
+help = "One rule per tag. Example: tag Treasure chest › Great, 5 stars: assigning that tag gives the clip 5 stars."
+
+[[cards.fields.columns]]
+key = "tag"
+label = "Tag"
+kind = "tag"
+help = "The tag of RustView's tag tree that sets the rating when you assign it. Only this tag counts, not the tags below it."
+
+[[cards.fields.columns]]
+key = "stars"
+label = "Rating"
+kind = "rating"
+default = 5
+help = "The rating the clip gets: 0 to 5 stars."
+
+[[cards.fields.columns]]
+key = "only_if_none"
+label = "Only if unrated"
+kind = "switch"
+default = true
+help = "On: the rating is set only while the clip has no rating yet; a rating you gave stays. Off: the rule's rating replaces any rating."
+
+[[cards.fields.columns]]
+key = "message"
+label = "Message"
+kind = "choice"
+default = "none"
+help = "Whether a message says that this rule set the rating: None, a Toast that goes away by itself, or a Banner that stays until you close it."
+options = [
+    { value = "none", label = "None", help = "No message; the plugin mark at the rating still tells." },
+    { value = "toast", label = "Toast", help = "A short message that goes away by itself." },
+    { value = "banner", label = "Banner", help = "A message that stays until you close it." },
+]
+
+[[cards]]
+title = "Messages"
+description = "All of this plugin's messages at once."
+
+[[cards.fields]]
+key = "show_messages"
+label = "Show messages"
+kind = "switch"
+default = true
+help = "The master switch of this plugin's messages. Off hides every message for now, without changing the Message column of the rules; switch it on again and they show as set."

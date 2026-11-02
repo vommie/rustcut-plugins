@@ -1,0 +1,38 @@
+//! {{name}}: what it does.
+
+use std::sync::Mutex;
+
+use rustcut_plugin_api::{Action, Context, Event, Issue, Level, Plugin, export_plugin};
+use serde::Deserialize;
+
+/// The fields of plugin.toml.
+#[derive(Debug, Clone, Deserialize)]
+pub struct Settings {
+    #[serde(default)]
+    pub show_messages: bool,
+}
+
+static SETTINGS: Mutex<Option<Settings>> = Mutex::new(None);
+
+struct ThisPlugin;
+
+impl Plugin for ThisPlugin {
+    fn configure(settings: String) -> Result<(), String> {
+        let settings: Settings = rustcut_plugin_api::parse_settings(&settings)?;
+        *SETTINGS
+            .lock()
+            .map_err(|_poisoned| "the plugin's state is broken".to_owned())? = Some(settings);
+        Ok(())
+    }
+
+    fn handle(event: Event, _context: Context) -> Result<Vec<Action>, String> {
+        rustcut_plugin_api::log(Level::Debug, &format!("{event:?}"));
+        Ok(Vec::new())
+    }
+
+    fn check(_settings: String) -> Vec<Issue> {
+        Vec::new()
+    }
+}
+
+export_plugin!(ThisPlugin);

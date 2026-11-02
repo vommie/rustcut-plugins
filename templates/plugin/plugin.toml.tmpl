@@ -1,0 +1,22 @@
+id = "{{id}}"
+name = "{{name}}"
+version = "0.1.0"
+api = "1.0"
+description = "What {{name}} does, in one sentence."
+authors = ["vommie"]
+license = "MIT"
+repository = "https://github.com/vommie/rustcut-plugins"
+icon = "puzzle"
+# The build output while developing; a plugin file always holds plugin.wasm.
+wasm = "../../target/wasm32-wasip2/release/{{crate}}.wasm"
+
+[[cards]]
+title = "Behavior"
+description = "What the card is about."
+
+[[cards.fields]]
+key = "show_messages"
+label = "Show messages"
+kind = "switch"
+default = true
+help = "What the switch does, with an example."
