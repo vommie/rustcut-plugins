@@ -1249,7 +1249,7 @@ checksum = "6b1e7f9a428571be2dc5bc0505c13fb6bf936822b894ec87abf8a08a4e51742d"
 [[package]]
 name = "rustcut-plugin-api"
 version = "1.0.0"
-source = "git+ssh://git@github.com/vommie/rustcut.git?branch=feat%2Fplugins#a3eb7a8d10f156c0efbee7edd6c04941d3ee2cb1"
+source = "git+ssh://git@github.com/vommie/rustcut.git?tag=plugin-api-v1.0.0#924e33c93a61e71e92aec45aa523e264d69c5c87"
 dependencies = [
  "serde",
  "serde_json",
@@ -1258,8 +1258,8 @@ dependencies = [
 
 [[package]]
 name = "rustcut-plugin-host"
-version = "0.0.96"
-source = "git+ssh://git@github.com/vommie/rustcut.git?branch=feat%2Fplugins#a3eb7a8d10f156c0efbee7edd6c04941d3ee2cb1"
+version = "0.0.97"
+source = "git+ssh://git@github.com/vommie/rustcut.git?tag=plugin-api-v1.0.0#924e33c93a61e71e92aec45aa523e264d69c5c87"
 dependencies = [
  "regex",
  "semver",

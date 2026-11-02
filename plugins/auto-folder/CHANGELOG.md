@@ -15,3 +15,4 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 - Without a match: nothing happens (default), or a default target folder is used.
 - Marks in Settings for broken regular expressions, rules without a source or target, duplicates and rules a more
   specific one overrides.
+- Rules can be reordered by dragging their grip or with their move buttons (the upper rule wins among equals).
