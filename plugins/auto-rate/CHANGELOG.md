@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-02
+
 ### Added
 
 - Rules from a tag to a rating: assigning the tag in the Tag & Rate panel sets the rating; removing the tag keeps it.
