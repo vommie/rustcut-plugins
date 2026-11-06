@@ -1,5 +1,9 @@
 # RustCut plugins
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/vommie/rustcut-plugins)](https://github.com/vommie/rustcut-plugins/releases)
+![Plugin API 1.0](https://img.shields.io/badge/plugin%20API-1.0-ff7a2f)
+
 Plugins for [RustCut](https://github.com/vommie/rustcut), the video cutter: each one a small WebAssembly component that
 reacts to what happens in RustCut and runs in RustCut's sandbox (no files, no network, a time and a memory limit).
 
@@ -66,7 +70,12 @@ dist/                    built plugin files (not in git)
 `cargo xtask new` gives a plugin that builds, loads and passes its test. RustCut's `docs/plugins.md` describes the
 events, actions, settings fields, limits and errors; the contract itself is
 [`rustcut-plugin.wit`](https://github.com/vommie/rustcut/blob/master/crates/rustcut-plugin-api/wit/rustcut-plugin.wit).
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the rules of this repository.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the rules of this repository and [AGENTS.md](AGENTS.md) for coding agents.
+Bug reports and ideas are welcome as issues and in the discussions; the repository does not take pull requests.
+
+## Security
+
+Please report security problems privately, as described in [SECURITY.md](SECURITY.md).
 
 ## License
 

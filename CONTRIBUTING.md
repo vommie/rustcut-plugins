@@ -1,6 +1,8 @@
 # Contributing
 
-Thank you for helping. The rules that keep the plugins safe and easy to maintain:
+Bug reports and ideas are welcome as [issues](https://github.com/vommie/rustcut-plugins/issues) and in the
+[discussions](https://github.com/vommie/rustcut-plugins/discussions); the repository does not take pull requests.
+[AGENTS.md](AGENTS.md) sums up the rules for coding agents. The rules that keep the plugins safe and easy to maintain:
 
 - **One plugin per folder** below `plugins/`, named after its id (lower case letters, digits and dashes). The crate,
   the folder and `plugin.toml`'s `id` have the same name; `cargo xtask check` enforces it.
@@ -13,4 +15,4 @@ Thank you for helping. The rules that keep the plugins safe and easy to maintain
 - **Language:** US English in code, comments, messages, docs and commit messages.
 - **Commits:** [Conventional Commits](https://www.conventionalcommits.org) with the plugin's id as the scope
   (`fix(auto-rate): ...`); `chore:`, `docs:`, `ci:` for the repository itself.
-- **Before a pull request:** `cargo xtask check` must pass.
+- **Before a commit:** `cargo xtask check` must pass.
