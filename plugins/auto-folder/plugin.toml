@@ -1,7 +1,7 @@
 id = "auto-folder"
 name = "Auto-Folder"
-version = "1.0.0"
-api = "1.0"
+version = "1.1.0"
+api = "1.1"
 description = "Sets the target folder from the folder the video comes from."
 authors = ["vommie"]
 license = "MIT"

@@ -14,9 +14,9 @@ publish = false
 
 [workspace.dependencies]
 # The plugin API of RustCut, pinned to a tag of RustCut's repository (plugin-api-vMAJOR.MINOR.PATCH).
-rustcut-plugin-api = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.0.0" }
+rustcut-plugin-api = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.1.0" }
 # RustCut's real plugin host, for the tests that run a built plugin (plugin-testkit only).
-rustcut-plugin-host = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.0.0" }
+rustcut-plugin-host = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.1.0" }
 plugin-testkit = { path = "crates/plugin-testkit" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

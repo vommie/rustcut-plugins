@@ -5,6 +5,11 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+### Changed
+- When the matching rule's folder (or the default target) is the target already, Auto-Folder leaves it alone and shows
+  no message: opening several videos from the same folder one after another says "Target folder set" only once.
+- Needs RustCut's plugin API 1.1.
+
 ## [1.0.0] - 2026-11-02
 
 ### Added

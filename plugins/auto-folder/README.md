@@ -4,7 +4,8 @@ A RustCut plugin that sets the target folder of Job Finalization from the folder
 
 Example: a rule with the source `~/Videos/Holiday` and the target folder "Holiday 2026". Every video you open from
 `~/Videos/Holiday` or a folder below it gets "Holiday 2026" as its target. If you choose another folder yourself, your
-choice stays until the next video.
+choice stays until the next video. When "Holiday 2026" is the target already (the video before came from there too),
+nothing happens and no message repeats. Needs RustCut's plugin API 1.1.
 
 ## Settings
 

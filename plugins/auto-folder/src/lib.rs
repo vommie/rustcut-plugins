@@ -42,7 +42,7 @@ impl Plugin for AutoFolder {
         let Some(state) = guard.as_ref() else {
             return Ok(Vec::new());
         };
-        Ok(decide(state, &event, &context))
+        Ok(decide(state, &event, &context, rustcut_plugin_api::target_folder()))
     }
 
     fn check(settings: String) -> Vec<Issue> {
@@ -68,8 +68,9 @@ impl Plugin for AutoFolder {
 
 export_plugin!(AutoFolder);
 
-/// What to do for an event: the winning rule's target (or the default target) and its message.
-fn decide(state: &State, event: &Event, context: &Context) -> Vec<Action> {
+/// What to do for an event: the winning rule's target (or the default target) and its message; nothing when that
+/// folder is the target already (`current`, the id RustCut reports), so the message does not repeat.
+fn decide(state: &State, event: &Event, context: &Context, current: Option<u32>) -> Vec<Action> {
     let settings = &state.settings;
     let applies = match event {
         Event::VideoOpened(OpenedBy::User) => true,
@@ -92,6 +93,13 @@ fn decide(state: &State, event: &Event, context: &Context) -> Vec<Action> {
         None => return Vec::new(),
     };
     let Some(target) = target else { return Vec::new() };
+    if current == Some(target) {
+        rustcut_plugin_api::log(
+            Level::Debug,
+            &format!("the target is already folder {target} ({reason})"),
+        );
+        return Vec::new();
+    }
     let mut actions = vec![Action::SetTarget(SetTarget {
         target: Target::Folder(target),
         reason: reason.clone(),

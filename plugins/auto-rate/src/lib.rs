@@ -37,6 +37,9 @@ impl Plugin for AutoRate {
         let Some((stars, rule)) = rating_for(&settings.rules, tag.id, context.rating) else {
             return Ok(Vec::new());
         };
+        if !settings.show_mark {
+            rustcut_plugin_api::hide_marks();
+        }
         let reason = format!("tag {}", tag.path_label());
         let mut actions = vec![Action::SetRating(SetRating {
             stars,
