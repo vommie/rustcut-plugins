@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-09
+
 ### Changed
 - When the matching rule's folder (or the default target) is the target already, Auto-Folder leaves it alone and shows
   no message: opening several videos from the same folder one after another says "Target folder set" only once.
