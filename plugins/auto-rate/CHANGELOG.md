@@ -5,6 +5,13 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+### Added
+- "Show mark" (Mark card, on by default): off sets the rating without the Auto-Rate icon at the rating bar. Settings of
+  1.0 keep the icon.
+
+### Changed
+- Needs RustCut's plugin API 1.1.
+
 ## [1.0.0] - 2026-11-02
 
 ### Added

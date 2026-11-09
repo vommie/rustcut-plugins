@@ -33,7 +33,7 @@ fn assigning_a_rule_tag_sets_its_rating() {
     let mut plugin = plugin_testkit::plugin!(settings());
     let actions = plugin.handle(&Event::TagAssigned(tag(7)), &rated(None)).unwrap();
     assert!(
-        matches!(&actions[0], Action::SetRating { stars: 5, reason } if reason == "tag Treasure chest › Great"),
+        matches!(&actions[0], Action::SetRating { stars: 5, reason, mark: true } if reason == "tag Treasure chest › Great"),
         "{actions:?}"
     );
     assert!(matches!(&actions[1], Action::Notify(n) if n.place == Place::Toast && n.title == "Rating set to 5 stars"));
@@ -89,4 +89,34 @@ fn check_marks_duplicate_and_empty_rules() {
         .unwrap();
     assert!(issues.iter().any(|i| i.row == Some(1)), "{issues:?}");
     assert!(issues.iter().any(|i| i.row == Some(2)), "{issues:?}");
+}
+
+#[test]
+fn show_mark_off_sets_the_rating_without_the_mark() {
+    let mut quiet = settings();
+    quiet["show_mark"] = json!(false);
+    let mut plugin = plugin_testkit::plugin!(quiet);
+    let actions = plugin.handle(&Event::TagAssigned(tag(7)), &rated(None)).unwrap();
+    assert!(
+        matches!(
+            &actions[0],
+            Action::SetRating {
+                stars: 5,
+                mark: false,
+                ..
+            }
+        ),
+        "{actions:?}"
+    );
+    assert!(
+        matches!(&actions[1], Action::Notify(n) if n.place == Place::Toast),
+        "messages stay: {actions:?}"
+    );
+
+    plugin.configure(&settings()).unwrap();
+    let actions = plugin.handle(&Event::TagAssigned(tag(7)), &rated(None)).unwrap();
+    assert!(
+        matches!(&actions[0], Action::SetRating { mark: true, .. }),
+        "without the value (settings of 1.0) the mark shows: {actions:?}"
+    );
 }

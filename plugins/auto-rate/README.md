@@ -13,9 +13,11 @@ Settings > Plugins > Auto-Rate:
 |---|---|
 | Rules | Tag, Rating, Only if unrated, Message (none, toast, banner) per rule. |
 | Show messages | The master switch of all messages; the Message column stays as it is. |
+| Show mark | On (default): the Auto-Rate icon shows at the rating bar after a rule set the rating. Off: no icon. |
 
 Only your own assignment of the tag counts, never a loaded job's tags. The Settings page marks rules without a tag or
-rating and duplicate tags; RustCut itself marks tags that no longer exist in RustView's tag tree.
+rating and duplicate tags; RustCut itself marks tags that no longer exist in RustView's tag tree. Needs RustCut's
+plugin API 1.1 (for Show mark).
 
 ## Build
 

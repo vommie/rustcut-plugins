@@ -1,7 +1,7 @@
 id = "auto-rate"
 name = "Auto-Rate"
-version = "1.0.0"
-api = "1.0"
+version = "1.1.0"
+api = "1.1"
 description = "Sets a rating when you assign a tag."
 authors = ["vommie"]
 license = "MIT"
@@ -51,7 +51,7 @@ kind = "choice"
 default = "none"
 help = "Whether a message says that this rule set the rating: None, a Toast that goes away by itself, or a Banner that stays until you close it."
 options = [
-    { value = "none", label = "None", help = "No message; the plugin mark at the rating still tells." },
+    { value = "none", label = "None", help = "No message; the plugin mark at the rating still tells (unless Show mark is off)." },
     { value = "toast", label = "Toast", help = "A short message that goes away by itself." },
     { value = "banner", label = "Banner", help = "A message that stays until you close it." },
 ]
@@ -66,3 +66,14 @@ label = "Show messages"
 kind = "switch"
 default = true
 help = "The master switch of this plugin's messages. Off hides every message for now, without changing the Message column of the rules; switch it on again and they show as set."
+
+[[cards]]
+title = "Mark"
+description = "The plugin's icon next to a rating it set."
+
+[[cards.fields]]
+key = "show_mark"
+label = "Show mark"
+kind = "switch"
+default = true
+help = "On: after a rule set the rating, the Auto-Rate icon shows at the rating bar (its tooltip names the tag, a click opens this page) until you change the rating. Off: the rating is set the same way, without the icon. Example: off, assigning Treasure chest › Great gives 5 stars and the rating bar looks as if you had clicked them."

@@ -34,6 +34,9 @@ pub struct Settings {
     pub rules: Vec<Rule>,
     #[serde(default = "yes")]
     pub show_messages: bool,
+    /// Whether RustCut shows the plugin's mark at a rating it set (missing in settings older than 1.1: on).
+    #[serde(default = "yes")]
+    pub show_mark: bool,
 }
 
 /// The rating to set when the user assigns `tag` to a clip rated `current`: the upper rule for the tag decides.
