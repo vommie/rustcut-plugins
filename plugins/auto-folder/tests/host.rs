@@ -31,7 +31,7 @@ fn the_most_specific_rule_sets_the_target_with_its_message() {
     let (event, context) = opened("/videos/holiday/2026/beach.mp4", OpenedBy::User);
     let actions = plugin.handle(&event, &context).unwrap();
     assert!(
-        matches!(&actions[0], Action::SetTarget { target: Target::Folder(2), reason } if reason == "rule /videos/holiday")
+        matches!(&actions[0], Action::SetTarget { target: Target::Folder(2), reason, mark: true } if reason == "rule /videos/holiday")
     );
     assert!(matches!(&actions[1], Action::Notify(n) if n.place == Place::Toast && n.level == Level::Info));
 
@@ -124,4 +124,49 @@ fn check_marks_the_rows_with_problems() {
             .any(|i| i.row == Some(1) && i.message.contains("no target")),
         "{issues:?}"
     );
+}
+
+#[test]
+fn the_target_already_set_stays_without_a_message() {
+    let mut plugin = plugin_testkit::plugin!(settings());
+    let (event, mut context) = opened("/videos/holiday/beach.mp4", OpenedBy::User);
+    context.target_folder = Some(2);
+    assert!(
+        plugin.handle(&event, &context).unwrap().is_empty(),
+        "folder 2 is the target already"
+    );
+
+    context.target_folder = Some(1);
+    let actions = plugin.handle(&event, &context).unwrap();
+    assert!(
+        matches!(
+            &actions[0],
+            Action::SetTarget {
+                target: Target::Folder(2),
+                ..
+            }
+        ),
+        "another folder is replaced as before: {actions:?}"
+    );
+    assert!(matches!(&actions[1], Action::Notify(n) if n.place == Place::Toast));
+
+    // A loaded job's own folder is no folder of the list: the rule applies as before.
+    let mut with_jobs = settings();
+    with_jobs["trigger"] = json!("also-jobs");
+    plugin.configure(&with_jobs).unwrap();
+    let (event, mut context) = opened("/videos/holiday/beach.mp4", OpenedBy::Job);
+    context.target_folder = None;
+    assert_eq!(plugin.handle(&event, &context).unwrap().len(), 2);
+
+    // The default target counts the same way.
+    let mut default = settings();
+    default["when_no_match"] = json!("default");
+    default["default_target"] = json!(5);
+    default["default_message"] = json!("toast");
+    plugin.configure(&default).unwrap();
+    let (event, mut context) = opened("/elsewhere/a.mp4", OpenedBy::User);
+    context.target_folder = Some(5);
+    assert!(plugin.handle(&event, &context).unwrap().is_empty());
+    context.target_folder = Some(0);
+    assert_eq!(plugin.handle(&event, &context).unwrap().len(), 2);
 }
