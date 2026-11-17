@@ -6,6 +6,41 @@ use rustcut_plugin_host::manifest::Manifest;
 
 use crate::commands::run;
 
+/// The plugin API (`MAJOR.MINOR`) a crate in `dir` builds against: the tag of its own `rustcut-plugin-api` dependency,
+/// else the workspace's (`plugin-api-v1.2.0` -> `1.2`).
+pub fn kit_api(root: &Path, dir: &Path) -> Result<String, String> {
+    let read = |path: PathBuf| -> Result<toml::Table, String> {
+        std::fs::read_to_string(&path)
+            .map_err(|err| format!("{}: {err}", path.display()))
+            .and_then(|text| {
+                text.parse()
+                    .map_err(|err: toml::de::Error| format!("{}: {err}", path.display()))
+            })
+    };
+    let tag_of = |table: Option<&toml::Value>| {
+        table
+            .and_then(|d| d.get("rustcut-plugin-api"))
+            .and_then(|d| d.get("tag"))
+            .and_then(toml::Value::as_str)
+            .map(str::to_owned)
+    };
+    let own = dir.join("Cargo.toml");
+    let own = if own.is_file() {
+        tag_of(read(own)?.get("dependencies"))
+    } else {
+        None
+    };
+    let workspace = read(root.join("Cargo.toml"))?;
+    let tag = own
+        .or_else(|| tag_of(workspace.get("workspace").and_then(|w| w.get("dependencies"))))
+        .ok_or("no rustcut-plugin-api tag in the plugin's or the workspace's Cargo.toml")?;
+    let version = tag
+        .strip_prefix("plugin-api-v")
+        .ok_or_else(|| format!("{tag} is no plugin-api-vX.Y.Z tag"))?;
+    let version = semver::Version::parse(version).map_err(|err| format!("{tag}: {err}"))?;
+    Ok(format!("{}.{}", version.major, version.minor))
+}
+
 /// Every plugin folder: (id, folder), sorted.
 pub fn plugins(root: &Path) -> Result<Vec<(String, PathBuf)>, String> {
     let entries = std::fs::read_dir(root.join("plugins")).map_err(|err| format!("plugins/: {err}"))?;
@@ -67,6 +102,14 @@ pub fn plugin(id: &str, dir: &Path) -> Result<(), String> {
         return Err(format!(
             "plugins/{id}/plugin.toml: wasm must be \"{}\"",
             expected.display()
+        ));
+    }
+    let built = kit_api(&dir.join("../.."), dir)?;
+    if manifest.api != built {
+        return Err(format!(
+            "plugins/{id}: plugin.toml says api \"{}\", but the plugin builds against plugin-api {built} (its Cargo.toml or the \
+             workspace's rustcut-plugin-api tag): a build imports exactly that API and loads in no older RustCut",
+            manifest.api
         ));
     }
     if !manifest.api_compatible() {

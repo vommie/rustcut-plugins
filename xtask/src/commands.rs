@@ -20,10 +20,17 @@ pub fn new(root: &Path, id: &str, name: &str) -> Result<(), String> {
         return Err(format!("{} exists already", dir.display()));
     }
     let template = root.join("templates/plugin");
+    // A new plugin builds against the workspace's kit, so it declares that API.
+    let api = checks::kit_api(root, &root.join("templates/plugin"))?;
     copy_template(
         &template,
         &dir,
-        &[("{{id}}", id), ("{{crate}}", &id.replace('-', "_")), ("{{name}}", name)],
+        &[
+            ("{{id}}", id),
+            ("{{crate}}", &id.replace('-', "_")),
+            ("{{name}}", name),
+            ("{{api}}", &api),
+        ],
     )?;
     println!("plugins/{id} is ready: cargo xtask build {id}, then add plugins/{id} as a development folder in RustCut");
     Ok(())
