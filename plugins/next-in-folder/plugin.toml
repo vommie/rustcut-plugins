@@ -1,0 +1,174 @@
+id = "next-in-folder"
+name = "Next in Folder"
+version = "1.0.0"
+api = "1.2"
+description = "Opens the next or previous video of the source's folder by a key, in the order Dolphin shows that folder."
+authors = ["vommie"]
+license = "MIT"
+repository = "https://github.com/vommie/rustcut-plugins"
+icon = "player-track-next"
+# The build output while developing; a plugin file always holds plugin.wasm.
+wasm = "../../target/wasm32-wasip2/release/next_in_folder.wasm"
+
+[[cards]]
+title = "Keys"
+description = "The keys work in the main window like RustCut's own keys and are checked against them and other plugins' keys (Settings > Hotkeys lists them under Plugins). With sections that are not saved as a job, hold the key, the button or the menu entry for the hold time of Settings > General."
+
+[[cards.fields]]
+key = "next_key"
+label = "Next file"
+kind = "key"
+default = "Control+PageDown"
+
+[[cards.fields]]
+key = "previous_key"
+label = "Previous file"
+kind = "key"
+default = "Control+PageUp"
+
+[[cards.fields]]
+key = "buttons"
+label = "Buttons in the menu bar"
+help = "Next and previous at the right end of the menu bar, left of the messages bell. The File menu has both entries either way."
+kind = "switch"
+default = true
+
+[[cards]]
+title = "Files"
+description = "Only videos RustCut opens count, only in the open video's own folder (no subfolders)."
+
+[[cards.fields]]
+key = "skip_with_job"
+label = "Skip files that have a job"
+help = "A file that is the source of a job in the queue (any state, also finished) is passed over."
+kind = "switch"
+default = true
+
+[[cards.fields]]
+key = "hidden"
+label = "Hidden files"
+help = "Files whose name starts with a dot."
+kind = "choice"
+default = "like-dolphin"
+options = [
+    { value = "like-dolphin", label = "Like Dolphin" },
+    { value = "skip", label = "Skip" },
+    { value = "show", label = "Include" },
+]
+
+[[cards.fields]]
+key = "at_end"
+label = "At the end of the folder"
+kind = "choice"
+default = "stop"
+options = [
+    { value = "stop", label = "Stop" },
+    { value = "wrap", label = "Start over" },
+]
+
+[[cards]]
+title = "Dolphin"
+description = "Dolphin is asked over D-Bus; it is never started for this. Without Dolphin's order the files go by name, A to Z."
+
+[[cards.fields]]
+key = "use_dolphin"
+label = "Use Dolphin's order"
+help = "The order Dolphin shows the folder in: by name, size, date or type, either direction."
+kind = "switch"
+default = true
+
+[[cards.fields]]
+key = "dolphin_when"
+label = "When"
+kind = "choice"
+default = "open-tab"
+enabled_if = { key = "use_dolphin", equals = true }
+options = [
+    { value = "open-tab", label = "Folder open in a Dolphin tab" },
+    { value = "running", label = "Dolphin runs" },
+    { value = "always", label = "Always (Dolphin's stored order)" },
+]
+
+[[cards]]
+title = "Notifications"
+description = "How Next in Folder tells you what happened. The bubble appears at the menu bar button (a toast when the buttons are off)."
+
+[[cards.fields]]
+key = "msg_opened"
+label = "File opened"
+help = "The name of the file that opened."
+kind = "choice"
+default = "bubble"
+options = [
+    { value = "none", label = "Nothing" },
+    { value = "bubble", label = "Bubble" },
+]
+
+[[cards.fields]]
+key = "msg_position"
+label = "Position and order"
+help = "Where the file stands and which order counted: \"4 of 12 · Dolphin: Modified, newest first\"."
+kind = "choice"
+default = "with-opened"
+options = [
+    { value = "none", label = "Nothing" },
+    { value = "with-opened", label = "In the bubble" },
+    { value = "toast", label = "Toast" },
+    { value = "banner", label = "Banner" },
+]
+
+[[cards.fields]]
+key = "msg_end"
+label = "End of the folder"
+kind = "choice"
+default = "toast"
+options = [
+    { value = "none", label = "Nothing" },
+    { value = "toast", label = "Toast" },
+    { value = "banner", label = "Banner" },
+]
+
+[[cards.fields]]
+key = "msg_skipped"
+label = "Files with a job skipped"
+kind = "choice"
+default = "toast"
+enabled_if = { key = "skip_with_job", equals = true }
+options = [
+    { value = "none", label = "Nothing" },
+    { value = "toast", label = "Toast" },
+    { value = "banner", label = "Banner" },
+]
+
+[[cards.fields]]
+key = "msg_unsupported"
+label = "Dolphin's order unknown"
+help = "Dolphin sorts by something RustCut cannot rebuild (rating, tags, length, ...), so names A to Z count. Told once per folder."
+kind = "choice"
+default = "toast"
+enabled_if = { key = "use_dolphin", equals = true }
+options = [
+    { value = "none", label = "Nothing" },
+    { value = "toast", label = "Toast" },
+    { value = "banner", label = "Banner" },
+]
+
+[[commands]]
+id = "previous-file"
+title = "Previous File"
+description = "Open the previous video of this folder"
+icon = "player-track-prev"
+key = "previous_key"
+menu = true
+button = "buttons"
+discards_sections = true
+
+[[commands]]
+id = "next-file"
+title = "Next File"
+description = "Open the next video of this folder"
+icon = "player-track-next"
+key = "next_key"
+menu = true
+button = "buttons"
+discards_sections = true

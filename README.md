@@ -11,6 +11,7 @@ reacts to what happens in RustCut and runs in RustCut's sandbox (no files, no ne
 |---|---|
 | [Auto-Folder](plugins/auto-folder) | Sets the target folder from the folder the video comes from. |
 | [Auto-Rate](plugins/auto-rate) | Sets a rating when you assign a tag. |
+| [Next in Folder](plugins/next-in-folder) | Opens the next or previous video of the folder by a key, in the order Dolphin shows it. |
 
 ## Install a plugin
 
