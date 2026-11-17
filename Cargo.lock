@@ -1015,6 +1015,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "743fb55ba31b18fb1ecef6bdc9aa2743314978ac084044301a7eee33fb99a20d"
 
 [[package]]
+name = "next-in-folder"
+version = "1.0.0"
+dependencies = [
+ "plugin-testkit",
+ "rustcut-plugin-api",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "object"
 version = "0.40.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1249,7 +1259,7 @@ checksum = "6b1e7f9a428571be2dc5bc0505c13fb6bf936822b894ec87abf8a08a4e51742d"
 [[package]]
 name = "rustcut-plugin-api"
 version = "1.1.0"
-source = "git+https://github.com/vommie/rustcut.git?tag=plugin-api-v1.1.0#406ed43d13b652fc89aa27bb1f94bbebcf93a502"
+source = "git+https://github.com/vommie/rustcut.git?tag=plugin-api-v1.2.0#50aea4a3e7a2679752f4a1d19cf5275991b80ad9"
 dependencies = [
  "serde",
  "serde_json",
@@ -1258,8 +1268,8 @@ dependencies = [
 
 [[package]]
 name = "rustcut-plugin-host"
-version = "0.0.111"
-source = "git+https://github.com/vommie/rustcut.git?tag=plugin-api-v1.1.0#406ed43d13b652fc89aa27bb1f94bbebcf93a502"
+version = "0.0.113"
+source = "git+https://github.com/vommie/rustcut.git?tag=plugin-api-v1.2.0#50aea4a3e7a2679752f4a1d19cf5275991b80ad9"
 dependencies = [
  "regex",
  "semver",

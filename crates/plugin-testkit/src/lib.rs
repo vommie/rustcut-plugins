@@ -12,8 +12,12 @@
 )]
 
 use std::path::{Path, PathBuf};
-use std::sync::{Mutex, OnceLock};
+use std::sync::{Arc, Mutex, OnceLock};
 
+pub use rustcut_plugin_host::commands::{
+    CommandCall, CommandOutcome, FileManagerMode, FolderFile, FolderListing, FolderOrder, FolderRequest, HiddenFiles,
+    Navigator, OrderSource,
+};
 use rustcut_plugin_host::manifest::Manifest;
 pub use rustcut_plugin_host::runtime::{CallError, Limits};
 use rustcut_plugin_host::runtime::{Instance, Runtime};
@@ -66,6 +70,24 @@ impl Plugin {
     /// The plugin's error, crash or timeout.
     pub fn handle(&mut self, event: &Event, context: &Context) -> Result<Vec<Action>, CallError> {
         self.instance.handle(event, context)
+    }
+
+    /// Runs one of the plugin's commands (plugin API 1.2), as RustCut does; `navigator` answers its `list-folder`.
+    ///
+    /// # Errors
+    /// The plugin's error, crash or timeout.
+    pub fn run_command(
+        &mut self,
+        command: &str,
+        context: &Context,
+        navigator: Option<Arc<dyn Navigator>>,
+    ) -> Result<CommandOutcome, CallError> {
+        let call = CommandCall {
+            command: command.to_owned(),
+            context: context.clone(),
+            navigator,
+        };
+        self.instance.run_command(&call)
     }
 
     /// Checks settings, as the plugin's Settings page does while the user edits them.
