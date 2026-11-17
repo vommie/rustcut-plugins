@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-17
+
 ### Added
 - The plugin: Next File (Ctrl+PageDown) and Previous File (Ctrl+PageUp) open the next or previous video of the open
   video's folder, by key, File menu entry or menu bar button.
