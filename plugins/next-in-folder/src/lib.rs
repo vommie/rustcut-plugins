@@ -1,8 +1,8 @@
 //! Next in Folder: opens the next or previous video of the open video's folder by a key, a File menu entry or a menu
 //! bar button, in the order Dolphin shows that folder (RustCut asks Dolphin; names A to Z without it).
 //!
-//! RustCut lists the folder (`list_folder`, plugin API 1.2) and opens the chosen file (`open_video`); this plugin
-//! decides which one and what to tell.
+//! RustCut steps through the folder (`step_folder`, plugin API 1.3: only the landing file reaches the plugin, however
+//! large the folder) and opens it (`open_video`); this plugin decides the settings and what to tell.
 
 mod walk;
 
@@ -10,11 +10,11 @@ use std::collections::BTreeSet;
 use std::sync::Mutex;
 
 use rustcut_plugin_api::{
-    Action, Commands, Context, Event, FileManagerMode, FolderListing, FolderRequest, HiddenFiles, Issue, Level, Notice,
-    OrderSource, Place, Plugin, export_plugin_with_commands,
+    Action, Commands, Context, Event, FileManagerMode, FolderOrder, FolderRequest, FolderStep, HiddenFiles, Issue,
+    Level, Notice, OrderSource, Place, Plugin, export_plugin_with_commands,
 };
 use serde::Deserialize;
-use walk::{Direction, File};
+use walk::Direction;
 
 /// The settings of `plugin.toml`.
 #[derive(Debug, Clone, Deserialize)]
@@ -88,8 +88,20 @@ impl Commands for NextInFolder {
         if context.video.is_none() {
             return Ok(notice(&settings.msg_end, "No video is open", "").into_iter().collect());
         }
-        let listing = rustcut_plugin_api::list_folder(request(&settings))?;
-        Ok(walk_folder(&settings, direction, &listing))
+        let folder = context
+            .video
+            .as_deref()
+            .and_then(|v| v.rsplit_once('/'))
+            .map_or("", |(dir, _)| dir)
+            .to_owned();
+        let forward = direction == Direction::Next;
+        let step = rustcut_plugin_api::step_folder(
+            request(&settings),
+            forward,
+            settings.skip_with_job,
+            settings.at_end == "wrap",
+        )?;
+        Ok(after_step(&settings, direction, &step, &folder))
     }
 }
 
@@ -115,27 +127,12 @@ fn request(settings: &Settings) -> FolderRequest {
     }
 }
 
-/// Picks the file, opens it and says what the settings ask for.
-fn walk_folder(settings: &Settings, direction: Direction, listing: &FolderListing) -> Vec<Action> {
-    let files: Vec<File> = listing
-        .files
-        .iter()
-        .map(|f| File {
-            name: f.name.clone(),
-            has_job: f.has_job,
-        })
-        .collect();
-    let current = listing.current.and_then(|i| usize::try_from(i).ok());
-    let step = walk::step(
-        &files,
-        current,
-        direction,
-        settings.skip_with_job,
-        settings.at_end == "wrap",
-    );
+/// Opens the file the step landed on and says what the settings ask for. `folder`: the open video's folder (an
+/// unknown order is told once per folder).
+fn after_step(settings: &Settings, direction: Direction, step: &FolderStep, folder: &str) -> Vec<Action> {
     let mut actions = Vec::new();
-    let order = &listing.order;
-    if order.source == OrderSource::NamesUnsupported && first_time(listing) {
+    let order = &step.order;
+    if order.source == OrderSource::NamesUnsupported && first_time(folder) {
         let detail = format!(
             "Dolphin sorts this folder by {}; Next in Folder goes by name, A to Z.",
             walk::role_label(&order.role)
@@ -150,24 +147,21 @@ fn walk_folder(settings: &Settings, direction: Direction, listing: &FolderListin
         let detail = format!("{} {noun} with a job in the queue passed over.", step.skipped);
         actions.extend(notice(&settings.msg_skipped, "Skipped files with a job", &detail));
     }
-    let Some(index) = step.target else {
+    let Some(file) = &step.file else {
         let title = match direction {
             Direction::Next => "Last video in this folder",
             Direction::Previous => "First video in this folder",
         };
-        let detail = if files.is_empty() {
+        let detail = if step.total == 0 {
             String::new()
         } else {
-            format!("{} videos, {}.", files.len(), order_words(listing))
+            format!("{} videos, {}.", step.total, order_words(order))
         };
         actions.extend(notice(&settings.msg_end, title, &detail));
         return actions;
     };
-    let Some(file) = listing.files.get(index) else {
-        return actions;
-    };
     rustcut_plugin_api::open_video(&file.path);
-    let position = format!("{} of {} · {}", index + 1, files.len(), order_words(listing));
+    let position = format!("{} of {} · {}", step.position, step.total, order_words(order));
     let position = if step.wrapped {
         format!("{position} · started over")
     } else {
@@ -186,8 +180,7 @@ fn walk_folder(settings: &Settings, direction: Direction, listing: &FolderListin
 }
 
 /// "Dolphin: Modified, newest first" or "names A to Z".
-fn order_words(listing: &FolderListing) -> String {
-    let order = &listing.order;
+fn order_words(order: &FolderOrder) -> String {
     if order.source == OrderSource::FileManager {
         format!(
             "Dolphin: {}, {}",
@@ -199,14 +192,9 @@ fn order_words(listing: &FolderListing) -> String {
     }
 }
 
-/// Whether the unknown order of this listing's folder is told for the first time.
-fn first_time(listing: &FolderListing) -> bool {
-    let folder = listing
-        .files
-        .first()
-        .and_then(|f| f.path.rsplit_once('/').map(|(dir, _)| dir.to_owned()))
-        .unwrap_or_default();
-    TOLD.lock().is_ok_and(|mut told| told.insert(folder))
+/// Whether the unknown order of `folder` is told for the first time.
+fn first_time(folder: &str) -> bool {
+    TOLD.lock().is_ok_and(|mut told| told.insert(folder.to_owned()))
 }
 
 /// A message at `place` ("none", "toast", "banner"); `None` for nothing.

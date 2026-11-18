@@ -138,3 +138,56 @@ fn an_order_rustcut_cannot_rebuild_is_told_once_and_settings_reach_the_request()
     assert_eq!(folder.asked.lock().unwrap()[2].file_manager, FileManagerMode::Off);
     assert!(plugin.run_command("other", &open(), Some(folder)).is_err());
 }
+
+/// A folder of `n` videos, the open one in the middle, prepared before the call.
+struct Large(FolderListing);
+
+impl Large {
+    fn new(n: usize) -> Arc<Self> {
+        let files = (0..n)
+            .map(|i| {
+                let name = format!("Holiday 2026 [GoPro] - clip {i:06} take {}.mp4", i % 7);
+                FolderFile {
+                    path: PathBuf::from("/media/videos/[test]/test").join(&name),
+                    name,
+                    has_job: i % 3 == 0,
+                }
+            })
+            .collect();
+        let order = FolderOrder {
+            source: OrderSource::FileManager,
+            role: "text".into(),
+            descending: false,
+            detail: String::new(),
+        };
+        Arc::new(Self(FolderListing {
+            files,
+            current: u32::try_from(n / 2).ok(),
+            order,
+        }))
+    }
+}
+
+impl Navigator for Large {
+    fn list_folder(&self, _video: &Path, _request: FolderRequest) -> Result<FolderListing, String> {
+        Ok(self.0.clone())
+    }
+}
+
+#[test]
+fn a_folder_of_500_000_files_is_quick_and_fits_the_memory_limit() {
+    let mut plugin = plugin_testkit::plugin!(json!({}));
+    for n in [1_000, 100_000, 500_000] {
+        let folder = Large::new(n);
+        let context = Context {
+            video: Some("/media/videos/[test]/test/x.mp4".into()),
+            ..Context::default()
+        };
+        let started = std::time::Instant::now();
+        let outcome = plugin.run_command("next-file", &context, Some(folder)).unwrap();
+        let took = started.elapsed();
+        println!("{n} files: {took:?}");
+        assert!(outcome.open.is_some());
+        assert!(took < std::time::Duration::from_millis(900), "{n} files took {took:?}");
+    }
+}
