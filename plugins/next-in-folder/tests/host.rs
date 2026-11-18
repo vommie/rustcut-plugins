@@ -198,6 +198,10 @@ fn the_options_set_the_folder_view() {
     let view = plugin.take_view_change().expect("set at load").expect("a view");
     assert!(view.progress && view.neighbors);
     assert_eq!(view.request.file_manager, FileManagerMode::OpenTab);
+    assert_eq!(view.rows, 15, "the default page");
+    plugin.configure(&json!({ "neighbor_rows": 30 })).unwrap();
+    let view = plugin.take_view_change().expect("changed").expect("a view");
+    assert_eq!(view.rows, 30);
     plugin.configure(&json!({ "progress": false })).unwrap();
     let view = plugin.take_view_change().expect("changed").expect("a view");
     assert!(!view.progress && view.neighbors);

@@ -40,6 +40,7 @@ struct Settings {
 struct ViewSwitches {
     progress: bool,
     neighbors: bool,
+    neighbor_rows: u32,
 }
 
 impl Default for ViewSwitches {
@@ -47,6 +48,7 @@ impl Default for ViewSwitches {
         Self {
             progress: true,
             neighbors: true,
+            neighbor_rows: 15,
         }
     }
 }
@@ -80,6 +82,8 @@ impl Plugin for NextInFolder {
         let parsed: Settings = rustcut_plugin_api::parse_settings(&settings)?;
         // RustCut keeps the progress and the neighbor list up to date itself (API 1.4).
         let switches = parsed.view;
+        // API 1.5: the neighbor list's page.
+        rustcut_plugin_api::set_neighbor_rows(switches.neighbor_rows);
         let view = (switches.progress || switches.neighbors).then(|| FolderView {
             request: request(&parsed),
             progress: switches.progress,

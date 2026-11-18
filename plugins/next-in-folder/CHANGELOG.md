@@ -5,6 +5,14 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+### Changed
+- The neighbor list is a navigator of the whole folder now (RustCut 0.0.117): a search with wildcards like Dolphin
+  (or a regular expression), pages of files with their number and size, and the keys to move through them.
+
+### Added
+- "Files per page" for the neighbor list (15 by default, 5 to 50).
+- Needs RustCut's plugin API 1.5 (RustCut 0.0.117 or newer).
+
 ## [1.2.0] - 2026-11-18
 
 ### Added
