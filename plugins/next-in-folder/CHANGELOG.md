@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-18
+
 ### Changed
 - RustCut takes the step through the folder (plugin API 1.3 `step-folder`): only the file it lands on reaches the
   plugin, so folders of hundreds of thousands of files cost no more time or memory than small ones. Needs RustCut
