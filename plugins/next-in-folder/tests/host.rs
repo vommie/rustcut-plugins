@@ -191,3 +191,21 @@ fn a_folder_of_500_000_files_is_quick_and_fits_the_memory_limit() {
         assert!(took < std::time::Duration::from_millis(900), "{n} files took {took:?}");
     }
 }
+
+#[test]
+fn the_options_set_the_folder_view() {
+    let mut plugin = plugin_testkit::plugin!(json!({}));
+    let view = plugin.take_view_change().expect("set at load").expect("a view");
+    assert!(view.progress && view.neighbors);
+    assert_eq!(view.request.file_manager, FileManagerMode::OpenTab);
+    plugin.configure(&json!({ "progress": false })).unwrap();
+    let view = plugin.take_view_change().expect("changed").expect("a view");
+    assert!(!view.progress && view.neighbors);
+    plugin
+        .configure(&json!({ "progress": false, "neighbors": false }))
+        .unwrap();
+    assert_eq!(plugin.take_view_change(), Some(None));
+    plugin.configure(&json!({ "use_dolphin": false })).unwrap();
+    let view = plugin.take_view_change().expect("changed").expect("a view");
+    assert_eq!(view.request.file_manager, FileManagerMode::Off);
+}

@@ -10,8 +10,8 @@ use std::collections::BTreeSet;
 use std::sync::Mutex;
 
 use rustcut_plugin_api::{
-    Action, Commands, Context, Event, FileManagerMode, FolderOrder, FolderRequest, FolderStep, HiddenFiles, Issue,
-    Level, Notice, OrderSource, Place, Plugin, export_plugin_with_commands,
+    Action, Commands, Context, Event, FileManagerMode, FolderOrder, FolderRequest, FolderStep, FolderView, HiddenFiles,
+    Issue, Level, Notice, OrderSource, Place, Plugin, export_plugin_with_commands,
 };
 use serde::Deserialize;
 use walk::Direction;
@@ -30,6 +30,25 @@ struct Settings {
     msg_end: String,
     msg_skipped: String,
     msg_unsupported: String,
+    #[serde(flatten)]
+    view: ViewSwitches,
+}
+
+/// What RustCut shows of the folder in the menu bar (API 1.4).
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(default)]
+struct ViewSwitches {
+    progress: bool,
+    neighbors: bool,
+}
+
+impl Default for ViewSwitches {
+    fn default() -> Self {
+        Self {
+            progress: true,
+            neighbors: true,
+        }
+    }
 }
 
 impl Default for Settings {
@@ -45,6 +64,7 @@ impl Default for Settings {
             msg_end: "toast".into(),
             msg_skipped: "toast".into(),
             msg_unsupported: "toast".into(),
+            view: ViewSwitches::default(),
         }
     }
 }
@@ -58,6 +78,14 @@ struct NextInFolder;
 impl Plugin for NextInFolder {
     fn configure(settings: String) -> Result<(), String> {
         let parsed: Settings = rustcut_plugin_api::parse_settings(&settings)?;
+        // RustCut keeps the progress and the neighbor list up to date itself (API 1.4).
+        let switches = parsed.view;
+        let view = (switches.progress || switches.neighbors).then(|| FolderView {
+            request: request(&parsed),
+            progress: switches.progress,
+            neighbors: switches.neighbors,
+        });
+        rustcut_plugin_api::set_folder_view(view);
         *SETTINGS
             .lock()
             .map_err(|err| format!("the settings are locked: {err}"))? = Some(parsed);
