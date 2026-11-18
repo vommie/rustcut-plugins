@@ -15,8 +15,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 
 pub use rustcut_plugin_host::commands::{
-    CommandCall, CommandOutcome, FileManagerMode, FolderFile, FolderListing, FolderOrder, FolderRequest, HiddenFiles,
-    Navigator, OrderSource,
+    CommandCall, CommandOutcome, FileManagerMode, FolderFile, FolderListing, FolderOrder, FolderRequest, FolderView,
+    HiddenFiles, Navigator, OrderSource,
 };
 use rustcut_plugin_host::manifest::Manifest;
 pub use rustcut_plugin_host::runtime::{CallError, Limits};
@@ -106,6 +106,11 @@ impl Plugin {
     pub fn configure(&mut self, settings: &Value) -> Result<(), CallError> {
         let values = effective(&self.manifest, settings);
         self.instance.configure(&Value::Object(values))
+    }
+
+    /// The folder view the last calls set (plugin API 1.4), once; `None` when it did not change.
+    pub fn take_view_change(&mut self) -> Option<Option<FolderView>> {
+        self.instance.take_view_change().map(|update| update.0)
     }
 
     /// The lines the plugin wrote since the last call.

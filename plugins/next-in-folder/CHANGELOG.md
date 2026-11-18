@@ -5,6 +5,16 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+### Added
+- Progress in the menu bar (on by default): a flat bar between the buttons, or alone, shows where the open video
+  stands in its folder (10 of 100 fills a tenth); the number shortens to what fits, the tooltip has the exact
+  position, the percent, the order and the folder. RustCut keeps it up to date when a video opens and when the folder
+  changes.
+- Neighbor list (on by default): a right click on the buttons or the progress lists the five videos before and after
+  the open one; a click opens one (held while sections are not saved). With buttons and progress off it has a button of
+  its own.
+- Needs RustCut's plugin API 1.4 (RustCut 0.0.116 or newer).
+
 ## [1.1.0] - 2026-11-18
 
 ### Changed
