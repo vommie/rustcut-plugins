@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-18
+
 ### Added
 - Progress in the menu bar (on by default): a flat bar between the buttons, or alone, shows where the open video
   stands in its folder (10 of 100 fills a tenth); the number shortens to what fits, the tooltip has the exact
