@@ -16,9 +16,9 @@ publish = false
 # The plugin API of RustCut, pinned to a tag of RustCut's repository (plugin-api-vMAJOR.MINOR.PATCH): the newest one, for
 # new plugins. A plugin may pin an older tag in its own Cargo.toml; its plugin.toml `api` must name the tag it builds
 # against (`cargo xtask check`), because a build imports exactly that API version and runs on no older RustCut.
-rustcut-plugin-api = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.4.0" }
+rustcut-plugin-api = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.5.0" }
 # RustCut's real plugin host, for the tests that run a built plugin (plugin-testkit only).
-rustcut-plugin-host = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.4.0" }
+rustcut-plugin-host = { git = "https://github.com/vommie/rustcut.git", tag = "plugin-api-v1.5.0" }
 plugin-testkit = { path = "crates/plugin-testkit" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

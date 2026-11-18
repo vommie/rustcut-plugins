@@ -1,7 +1,7 @@
 id = "next-in-folder"
 name = "Next in Folder"
-version = "1.2.0"
-api = "1.4"
+version = "1.3.0"
+api = "1.5"
 description = "Opens the next or previous video of the source's folder by a key, in the order Dolphin shows that folder."
 authors = ["vommie"]
 license = "MIT"
@@ -43,9 +43,18 @@ default = true
 [[cards.fields]]
 key = "neighbors"
 label = "Neighbor list"
-help = "A right click on the buttons or the progress lists the five videos before and after the open one; a click opens one. With buttons and progress off it gets a button of its own."
+help = "A right click on the buttons or the progress (or a click on the progress) opens the files of the folder, with a search and pages; a click opens one. With buttons and progress off it gets a button of its own."
 kind = "switch"
 default = true
+
+[[cards.fields]]
+key = "neighbor_rows"
+label = "Files per page"
+help = "How many files a page of the neighbor list shows."
+kind = "number"
+default = 15
+min = 5
+max = 50
 
 [[cards]]
 title = "Files"
