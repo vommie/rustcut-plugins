@@ -5,6 +5,8 @@ the plugin's versions follow [Semantic Versioning](https://semver.org/spec/v2.0.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-19
+
 ### Changed
 - The neighbor list is a navigator of the whole folder now (RustCut 0.0.117): a search with wildcards like Dolphin
   (or a regular expression), pages of files with their number and size, and the keys to move through them.
